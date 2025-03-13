@@ -13,13 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 54.167.78.207 >> ~/.ssh/known_hosts
-
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@54.167.78.207 << 'EOF'
@@ -27,4 +20,3 @@ jobs:
             git pull origin main  # ⚡ 1️⃣ Code pull ho server per
             docker compose up --build -d  # ⚡ 3️⃣ Docker Compose run ho
           EOF
-#check this
