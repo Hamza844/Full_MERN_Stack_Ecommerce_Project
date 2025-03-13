@@ -1,9 +1,9 @@
-name: Deploy to Ubuntu Server
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - main  # Jab 'main' branch par push hoga, deploy trigger hoga
+      - main  # Change this if your default branch is different
 
 jobs:
   deploy:
@@ -11,19 +11,19 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup SSH Key
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 54.167.78.207 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 18.206.155.99 >> ~/.ssh/known_hosts
 
-      - name: Deploy to Server
+      - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@54.167.78.207 << 'EOF'
-            cd /home/ubuntu/my_project  # ⚡ 2️⃣ Change directory
-            git pull origin main  # ⚡ 1️⃣ Code pull ho server per
-            docker compose up --build -d  # ⚡ 3️⃣ Docker Compose run ho
+          ssh ubuntu@18.206.155.99 << 'EOF'
+            cd /home/ubuntu || git clone git@github.com:hamza844/your-repo.git app && cd app
+            git pull origin main
+            docker-compose up -d --build
           EOF
