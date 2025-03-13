@@ -23,15 +23,15 @@ jobs:
             cd /home/ubuntu || exit
 
             # Agar repo pehle se hai, to pull karo warna clone karo
-            if [ ! -d "app/.git" ]; then
-              git clone git@github.com:hamza844/your-repo-name.git app
+            if [ ! -d "Full_MERN_Stack_Ecommerce_Project/.git" ]; then
+              git clone https://github.com/Hamza844/Full_MERN_Stack_Ecommerce_Project.git
             else
-              cd app
+              cd Full_MERN_Stack_Ecommerce_Project
               git reset --hard
               git pull origin main
             fi
 
             # Docker Compose Run Karo
-            cd /home/ubuntu/app
+            cd /home/ubuntu/Full_MERN_Stack_Ecommerce_Project
             docker compose up -d --build
           EOF
