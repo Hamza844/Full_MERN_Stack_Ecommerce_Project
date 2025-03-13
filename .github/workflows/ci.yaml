@@ -27,3 +27,4 @@ jobs:
             git pull origin main  # ⚡ 1️⃣ Code pull ho server per
             docker compose up --build -d  # ⚡ 3️⃣ Docker Compose run ho
           EOF
+#check this
