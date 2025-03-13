@@ -1,29 +1,37 @@
 name: Deploy to EC2
-##testing 
+
 on:
   push:
     branches:
-      - main  # Change this if your default branch is different
+      - main  # Ya jo bhi tumhari main branch hai
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup SSH
+      - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 18.206.155.99 >> ~/.ssh/known_hosts
 
-      - name: Deploy to EC2
+      - name: SSH into Server and Deploy
         run: |
           ssh ubuntu@18.206.155.99 << 'EOF'
-            cd /home/ubuntu || git clone git@github.com:hamza844/your-repo.git app && cd app
-            git pull origin main
-            docker-compose up -d --build
+            cd /home/ubuntu || exit
+
+            # Agar repo pehle se hai, to pull karo warna clone karo
+            if [ ! -d "app/.git" ]; then
+              git clone git@github.com:hamza844/your-repo-name.git app
+            else
+              cd app
+              git reset --hard
+              git pull origin main
+            fi
+
+            # Docker Compose Run Karo
+            cd /home/ubuntu/app
+            docker compose up -d --build
           EOF
